@@ -59,6 +59,7 @@ class ExtendedImage extends StatefulWidget {
     this.isAntiAlias = false,
     this.handleLoadingProgress = false,
     this.layoutInsets = EdgeInsets.zero,
+    this.enablePan = true,
   })  : assert(constraints == null || constraints.debugAssertIsValid()),
         constraints = (width != null || height != null)
             ? constraints?.tighten(width: width, height: height) ??
@@ -239,6 +240,7 @@ class ExtendedImage extends StatefulWidget {
     bool cacheRawData = false,
     String? imageCacheName,
     this.layoutInsets = EdgeInsets.zero,
+      this.enablePan = true,
   })  : assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0),
         image = ExtendedResizeImage.resizeIfNeeded(
@@ -336,6 +338,7 @@ class ExtendedImage extends StatefulWidget {
     bool cacheRawData = false,
     String? imageCacheName,
     this.layoutInsets = EdgeInsets.zero,
+      this.enablePan = true,
   })  :
         // FileImage is not supported on Flutter Web therefore neither this method.
         assert(
@@ -427,6 +430,7 @@ class ExtendedImage extends StatefulWidget {
     bool cacheRawData = false,
     String? imageCacheName,
     this.layoutInsets = EdgeInsets.zero,
+      this.enablePan = true,
   })  : assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0),
         image = ExtendedResizeImage.resizeIfNeeded(
@@ -506,6 +510,7 @@ class ExtendedImage extends StatefulWidget {
     String? imageCacheName,
     Duration? cacheMaxAge,
     this.layoutInsets = EdgeInsets.zero,
+      this.enablePan = true,
   })  : assert(cacheWidth == null || cacheWidth > 0),
         assert(cacheHeight == null || cacheHeight > 0),
         image = ExtendedResizeImage.resizeIfNeeded(
@@ -577,6 +582,8 @@ class ExtendedImage extends StatefulWidget {
 
   /// image mode (none,gesture)
   final ExtendedImageMode mode;
+
+  final bool? enablePan;
 
   ///you can paint anything if you want before paint image.
   ///it's to used in  [ExtendedRawImage]
@@ -1005,7 +1012,7 @@ class _ExtendedImageState extends State<ExtendedImage>
     // add for loading/failed/ unGesture image
     if (_slidePageState != null &&
         !(_loadState == LoadState.completed &&
-            widget.mode == ExtendedImageMode.gesture)) {
+            widget.mode == ExtendedImageMode.gesture && widget.enablePan == true)) {
       current = ExtendedImageSlidePageHandler(
         child: current,
         extendedImageSlidePageState: _slidePageState,
@@ -1165,7 +1172,7 @@ class _ExtendedImageState extends State<ExtendedImage>
 
   Widget _getCompletedWidget() {
     Widget current;
-    if (widget.mode == ExtendedImageMode.gesture) {
+    if (widget.mode == ExtendedImageMode.gesture && widget.enablePan == true) {
       current = ExtendedImageGesture(
         this,
         key: widget.extendedImageGestureKey,
